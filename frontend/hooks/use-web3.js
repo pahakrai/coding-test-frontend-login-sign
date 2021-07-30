@@ -34,5 +34,4 @@ const useWeb3 = () => {
     return { web3, errors};
 };
 
-// const web3 = useWeb3();
 export default useWeb3;

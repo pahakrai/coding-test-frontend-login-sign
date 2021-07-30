@@ -7,7 +7,12 @@ const useRequest = () => {
     const doRequest = async ({ url, method, body, onSuccess }) => {
         try {
             setErrors(null);
-            const response = await axios[method](url, body);
+            const response = await axios[method](url, body, {
+                headers: {
+                    'Content-Type': 'application/json'
+                  },
+                withCredentials: true
+            });
             if (onSuccess && response) {
                 onSuccess(response.data);
             }

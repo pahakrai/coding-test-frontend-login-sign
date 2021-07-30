@@ -5,16 +5,22 @@ import cookieSession from 'cookie-session';
 
 import { authRouter } from './routes/auth.js';
 
+const CORS_ORIGIN_URI = 'http://localhost:3005';
+
 const {json} = parser;
 const app = express();
 
-
-app.set('trust proxy', 11);
+app.set('trust proxy', 1);
 app.use(json());
-app.use(cors());
+app.use(cors({
+    origin: CORS_ORIGIN_URI,
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
+    credentials: true
+}));
 app.use(
     cookieSession({
-        signed: false
+        signed: false,
+        secure: false
     })
 );
 app.use(authRouter);

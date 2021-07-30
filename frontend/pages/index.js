@@ -4,16 +4,13 @@ import Router from "next/router";
 import useRequest from '../hooks/use-request';
 import useWeb3 from '../hooks/use-web3';
 
-import buildClient from '../api/build-client';
+import { API_BASE_URI } from '../api/build-client';
 
-const LandingPage = ({currentAddress}) => {
+const LandingPage = ({currentAddress, currentToken}) => {
     const [token, setToken] = useState(null);
     const [errors, setErrors] = useState(null);
     const {doRequest, errors: requestErrors} = useRequest();
     const {web3, errors: web3errors} = useWeb3();
-
-
-    console.log(currentAddress);
 
     const handleSignin = async (event) => {
         event.preventDefault();
@@ -32,10 +29,10 @@ const LandingPage = ({currentAddress}) => {
             // without making request
             // return nonce
             const nonce = await doRequest({
-                url: 'http://localhost:3000/token',
+                url: `${API_BASE_URI}/token`,
                 method: 'get',
                 onSuccess: () => {
-                    // do whatever required
+                    // do any callbacks
                 }
             });
             console.log(nonce);
@@ -51,11 +48,11 @@ const LandingPage = ({currentAddress}) => {
             }
             // autheticate and return token
             const token = await doRequest({
-                url: 'http://localhost:3000/auth',
+                url: `${API_BASE_URI}/auth`,
                 method: 'post',
                 body: data,
                 onSuccess: () => {
-                    // Router.push('/')
+                    // Router.reload()
                 }
             });
             setToken(token);
@@ -75,11 +72,10 @@ const LandingPage = ({currentAddress}) => {
             setErrors(null);
             // autheticate and return token
             doRequest({
-                url: 'http://localhost:3000/auth/sign-out',
+                url: `${API_BASE_URI}/auth/sign-out`,
                 method: 'post',
-                body: data,
                 onSuccess: () => {
-                    Router.push('/')
+                    Router.reload();
                 }
             });
         } catch (error) {
@@ -95,22 +91,15 @@ const LandingPage = ({currentAddress}) => {
         <div>
             <div className="row justify-content-center">
                 <p>
-                    {currentAddress ? "Hello Metamask User" : "Please login with metamask"}
+                    {currentAddress || token || currentToken ? `Hello Metamask User ${token || currentToken}` : "Please login with MetaMask"}
                 </p>
-                {!web3errors && <button className="btn btn-primary" onClick={currentAddress ? handleSignOut : handleSignin}>
-                    {currentAddress ? "Sign Out" : "Sign In With MetaMask"}
+                {!web3errors && <button className="btn btn-primary" onClick={currentAddress || token ? handleSignOut : handleSignin}>
+                    {currentAddress || token ? "Sign Out" : "Sign In With MetaMask"}
                 </button>}
             </div>
             {web3errors || requestErrors || errors}
         </div>
     );
-}
-
-
-LandingPage.getInitialProps = async (context) => {
-    const client = buildClient(context);
-    const {data} = await client.get('/auth/current-address');
-    return data;
 }
 
 export default LandingPage; 

@@ -1,10 +1,12 @@
 import axios from 'axios';
 
+export const API_BASE_URI = 'http://localhost:3000';
+
 const client = ({ req }) => {
     if (typeof window === 'undefined') {
         // we are on the server
         return axios.create({
-            baseURL: 'http://localhost:3000',
+            baseURL: API_BASE_URI,
             headers: req.headers
         });
     } else {

@@ -3,7 +3,6 @@ import { recoverPersonalSignature } from 'eth-sig-util';
 import { bufferToHex } from 'ethereumjs-util';
 import jwt from 'jsonwebtoken';
 import { currentAddress } from '../middlewares/current-address.js';
-import { JWT_KEY } from '../index.js';
 
 const router = express.Router();
 
@@ -16,7 +15,6 @@ router.post("/auth", async (req, res) => {
         data: msgHex,
         sig: signature,
     });
-    console.log(address, publicAddress);
     // check if the recovered public address is equal to provided address
     if (address === publicAddress) {
         // can have user logic here before creating token
@@ -24,9 +22,8 @@ router.post("/auth", async (req, res) => {
             {   
                 publicAddress
             }, 
-            JWT_KEY
+            process.env.JWT_KEY
         );
-        console.log(clientJwt);
         // store it on session object
         req.session = { jwt : clientJwt};
         res.status(201).send(clientJwt);
@@ -41,7 +38,7 @@ router.post('/auth/sign-out', (req, res)  => {
 });
 
 router.get('/auth/current-address', currentAddress, (req, res)  => {
-    res.send({currentAddress: req.currentAddress || null});
+    res.send({currentAddress: req.currentAddress || null, currentToken: req.currentToken});
 });
 
 router.get("/token", (req, res) => {

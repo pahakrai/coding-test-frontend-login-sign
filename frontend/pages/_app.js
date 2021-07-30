@@ -1,13 +1,12 @@
-import {useEffect, useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import buildClient from '../api/build-client';
 
 
-const AppComponent = ({ Component, pageProps, currentAddress }) => {    
+const AppComponent = ({ Component, pageProps, currentAddress, currentToken }) => {    
     return (
         <div className="container">
-            <Component currentAddress={currentAddress} {...pageProps} />
+            <Component currentAddress={currentAddress} currentToken={currentToken} {...pageProps} />
         </div>
     );
 };
@@ -22,7 +21,8 @@ AppComponent.getInitialProps = async (appContext) => {
     }
     return {
         pageProps,
-        currentAddress: data?.currentAddress
+        currentAddress: data?.currentAddress,
+        currentToken: data?.currentToken
     };
 };
 
