@@ -4,8 +4,6 @@ import Router from "next/router";
 import useRequest from '../hooks/use-request';
 import useWeb3 from '../hooks/use-web3';
 
-import { API_BASE_URI } from '../api/build-client';
-
 const LandingPage = ({currentAddress, currentToken}) => {
     const [token, setToken] = useState(null);
     const [errors, setErrors] = useState(null);
@@ -29,13 +27,12 @@ const LandingPage = ({currentAddress, currentToken}) => {
             // without making request
             // return nonce
             const nonce = await doRequest({
-                url: `${API_BASE_URI}/token`,
+                url: `${process.env.API_BASE_URI}/token`,
                 method: 'get',
                 onSuccess: () => {
                     // do any callbacks
                 }
             });
-            console.log(nonce);
             // sign data to unlock account with nonce and address
             const signature = await web3.eth.personal.sign(
                 nonce.toString(),
@@ -48,7 +45,7 @@ const LandingPage = ({currentAddress, currentToken}) => {
             }
             // autheticate and return token
             const token = await doRequest({
-                url: `${API_BASE_URI}/auth`,
+                url: `${process.env.API_BASE_URI}/auth`,
                 method: 'post',
                 body: data,
                 onSuccess: () => {
@@ -72,7 +69,7 @@ const LandingPage = ({currentAddress, currentToken}) => {
             setErrors(null);
             // autheticate and return token
             doRequest({
-                url: `${API_BASE_URI}/auth/sign-out`,
+                url: `${process.env.API_BASE_URI}/auth/sign-out`,
                 method: 'post',
                 onSuccess: () => {
                     Router.reload();
