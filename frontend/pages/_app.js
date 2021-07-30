@@ -4,19 +4,17 @@ import 'bootstrap/dist/css/bootstrap.css';
 import buildClient from '../api/build-client';
 
 
-const AppComponent = ({ Component, pageProps, nonce }) => {
-    console.log(pageProps, nonce, "props here");
-    
+const AppComponent = ({ Component, pageProps, currentAddress }) => {    
     return (
         <div className="container">
-            <Component nonce={nonce} {...pageProps} />
+            <Component currentAddress={currentAddress} {...pageProps} />
         </div>
     );
 };
 
 AppComponent.getInitialProps = async (appContext) => {
     const client = buildClient(appContext.ctx);
-    const {data} = await client.get('/token');
+    const {data} = await client.get('/auth/current-address');
 
     let pageProps = {};
     if (appContext.Component.getInitialProps) {
@@ -24,7 +22,7 @@ AppComponent.getInitialProps = async (appContext) => {
     }
     return {
         pageProps,
-        nonce: data
+        currentAddress: data?.currentAddress
     };
 };
 

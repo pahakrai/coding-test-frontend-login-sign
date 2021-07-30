@@ -2,14 +2,12 @@ import axios from 'axios';
 import { useState } from 'react';
 
 
-const useRequest = ({url, method, body = {}, onSuccess}) => {
+const useRequest = () => {
     const [errors, setErrors] = useState(null);
-    const doRequest = async ({ data }) => {
+    const doRequest = async ({ url, method, body, onSuccess }) => {
         try {
             setErrors(null);
-            console.log(data, method, body, url)
-            const response = await axios[method](url, { ...body, ...data});
-            console.log(response);
+            const response = await axios[method](url, body);
             if (onSuccess && response) {
                 onSuccess(response.data);
             }
