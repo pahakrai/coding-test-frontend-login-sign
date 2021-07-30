@@ -38,6 +38,7 @@ router.post('/auth/sign-out', (req, res)  => {
 });
 
 router.get('/auth/current-address', currentAddress, (req, res)  => {
+    // currentToken added for display on frontend
     res.send({currentAddress: req.currentAddress || null, currentToken: req.currentToken});
 });
 
