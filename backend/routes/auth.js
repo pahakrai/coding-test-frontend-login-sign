@@ -26,7 +26,7 @@ router.post("/auth", async (req, res) => {
         );
         // store it on session object
         req.session = { jwt : clientJwt};
-        res.status(201).send(clientJwt);
+        res.status(200).send(clientJwt);
     } else {
         res.status(401).send("address authorization failed");
     }
